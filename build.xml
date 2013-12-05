@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project name="book-search" default="war" basedir=".">
+	<property file="build.properties"/>
+
+	<!-- Sets variables which can later be used. -->
+	<!-- The value of a property is accessed via ${} -->
+	<property name="src.dir" location="${basedir}/src" />
+	<property name="web.dir" location="${basedir}/web" />
+	<property name="build.dir" location="${web.dir}/WEB-INF/classes" />
+	<property name="war.dir" location="${basedir}/war" />
+    <property name="app.name" value="book-search"/>
+	<property name="app.path" value="/${app.name}/" />
+	
+	<property name="compile.debug" value="true" />
+	<property name="compile.deprecation" value="false"/>
+	<property name="compile.optimize" value="true"/>
+
+	<path id="compile.classpath">
+		<fileset dir="${web.dir}/WEB-INF/lib">
+	    	<include name="*.jar"/>
+		</fileset>
+
+		<fileset dir="${catalina.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+		<pathelement path="${build.dir}"/>
+	</path>
+	
+	<!-- Deletes the existing build, docs and dist directory-->
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<!-- Creates the build, docs and dist directory-->
+	<target name="makedir">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<!-- Compiles the java code (including the usage of library for JUnit -->
+	<target name="compile" depends="clean, makedir">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="${compile.debug}"
+			deprecation="${compile.deprecation}" optimize="${compile.optimize}" includeantruntime="false">
+			<classpath refid="compile.classpath"></classpath>
+		</javac>
+		<copy todir="${build.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java"/>
+		</copy>
+	</target>
+
+	<!--Creates the deployable war file  -->
+	<target name="war" depends="compile">
+		<war destfile="${war.dir}\book-search.war" webxml="${web.dir}/WEB-INF/web.xml">
+		</war>
+	</target>
+
+</project>
